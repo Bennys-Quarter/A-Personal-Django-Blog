@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("blog/article/<slug:slug>", views.blog_article, name='blog_article'),
 ]
 
 if settings.DEBUG:

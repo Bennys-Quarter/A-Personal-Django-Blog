@@ -1,26 +1,11 @@
-<!DOCTYPE html>
+{% extends 'blog/index.html' %}
+{% block article %}
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lorem Ipsum Page</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 40px;
-      background-color: #f9f9f9;
-      color: #333;
-    }
-    h1, h2 {
-      color: #111;
-    }
-    p {
-      max-width: 800px;
-    }
-  </style>
 </head>
-<body>
 
   <h1>Lorem Ipsum</h1>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
@@ -33,5 +18,5 @@
   <h2>Another Subheading</h2>
   <p>Praesent egestas tristique nibh. Sed a libero. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In convallis.</p>
 
-</body>
-</html>
+
+{% endblock article %}

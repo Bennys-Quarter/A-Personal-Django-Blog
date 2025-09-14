@@ -10,9 +10,26 @@
 <link href="https://fonts.googleapis.com" rel="preconnect" ><link href="https://fonts.gstatic.com" rel="preconnect" crossorigin ></head>
 <body id="il6a">
 <div id="HeaderContainer">
-    <H1 id="TitleText">Webblog</H1></div>
+    <a href="{% url 'index' %}">
+        <H1 id="TitleText">Webblog</H1>
+    </a>
+</div>
 <div id="ContentContainer">
-    <div id="BlogContainer"></div>
+    <div id="BlogContainer">
+        {% if blog_content %}
+            {% block article %}{% endblock %}
+        {% else %}
+        {% if blog_posts %}
+            {% for post in blog_posts %}
+                {% if post.is_published %}
+                    {% block card %}{% endblock %}
+                {% endif %}
+            {% endfor %}
+            {% else %}
+                <p>No Blogs are available.</p>
+        {% endif %}
+    {% endif %}
+    </div>
 </div>
 <div id="FooterContainer">
     <div id="ip46k"><span id="i0fui">© Benedikt Görgei</span>
