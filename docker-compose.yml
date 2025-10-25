@@ -33,7 +33,7 @@ services:
       - "--entrypoints.traefik.address=:8080"
       - "--certificatesresolvers.myresolver.acme.httpchallenge=true"    # Enable Let's Encrypt HTTP challenge
       - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.myresolver.acme.email=benedikt.privat@hotmail.com"
+      - "--certificatesresolvers.myresolver.acme.email=your-email@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/etc/traefik/acme.json"
     labels:
       - "traefik.http.middlewares.block-all.ipwhitelist.sourcerange=0.0.0.0/32"
