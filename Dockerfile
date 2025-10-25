@@ -28,4 +28,4 @@ COPY . /app/
 EXPOSE 80
 
 # Run Gunicorn http server
-CMD ["gunicorn", "MyWebBlog.wsgi", "--workers=3", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "mysite.wsgi", "--workers=3", "--bind", "0.0.0.0:8000"]
