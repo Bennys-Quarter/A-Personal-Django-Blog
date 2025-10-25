@@ -1,0 +1,62 @@
+services:
+  webblog:
+    image: my_image
+    container_name: testblog
+    command: gunicorn mysite.wsgi --workers=3 --bind 0.0.0.0:8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.testblog-localhost.rule=Host(`127.0.0.1`)"
+      - "traefik.http.routers.testblog-localnetwork.rule=Host(`YOUR LAN IP`) "
+      - "traefik.http.routers.testblog.rule=Host(`www.your-domain.com`)"
+      - "traefik.http.routers.testblog-admin.rule=Host(`www.your-domain.com`) && PathPrefix(`/admin`)"
+      - "traefik.http.routers.testblog.tls=true"
+      - "traefik.http.routers.testblog-admin.tls=true"
+      - "traefik.http.routers.testblog-admin.entrypoints=websecure"
+      - "traefik.http.routers.testblog.entrypoints=websecure"
+      - "traefik.http.routers.testblog-admin.middlewares=block-all@docker"
+      - "traefik.http.services.testblog.loadbalancer.server.port=8000"
+    volumes:
+      - ./staticfiles:/app/staticfiles
+      - ./media:/app/media
+    networks:
+      - web
+
+  traefik:
+    image: traefik:v3.5
+    container_name: testtraefik
+    command:
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.traefik.address=:8080"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"    # Enable Let's Encrypt HTTP challenge
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.email=benedikt.privat@hotmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/etc/traefik/acme.json"
+    labels:
+      - "traefik.http.middlewares.block-all.ipwhitelist.sourcerange=0.0.0.0/32"
+      - "traefik.http.routers.traefik-ext.entrypoints=traefik"
+      - "traefik.http.routers.traefik-ext.rule=Host(`192.168.1.100`) && (PathPrefix(`/`) || PathPrefix(`/api`))"
+      - "traefik.http.routers.traefik-ext.middlewares=block-all@docker"
+      - "traefik.http.routers.traefik-dashboard.rule=PathPrefix(`/`) || PathPrefix(`/api`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=traefik"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+    ports:
+      - "80:80"       # HTTP (used for ACME challenge)
+      - "443:443"     # HTTPS
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Required for Traefik to access Docker
+      - ./traefik/certificates/acme.json:/etc/traefik/acme.json  # For ACME storage
+    networks:
+      - web
+    restart: always
+
+volumes:
+  acme.json: {}   # Required to store certificates
+
+networks:
+  web:
+    external: false
