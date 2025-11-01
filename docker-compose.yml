@@ -18,6 +18,7 @@ services:
     volumes:
       - ./staticfiles:/app/staticfiles
       - ./media:/app/media
+      - ./data:/app/data
     networks:
       - web
 
